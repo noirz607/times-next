@@ -33,7 +33,11 @@ const SUMMARY_LENGTH = 160
 
 const parser = new XMLParser({
   ignoreAttributes: true,
-  processEntities: true,
+  processEntities: {
+    enabled: true,
+    maxTotalExpansions: 200_000,
+    maxExpandedLength: 10_000_000,
+  } as unknown as boolean,
   htmlEntities: true,
   isArray: (name) => name === 'item',
 })
