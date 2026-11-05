@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* 去掉 type="search" 自带的清除按钮，使用自定义的 */
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}

@@ -1,0 +1,32 @@
+{
+  "name": "ecnu-times-next",
+  "private": true,
+  "version": "2.0.0",
+  "description": "华东师大·旧闻缓递 —— 校内通知聚合（ECNU-minus/times 重写版）",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "fetch": "node scripts/fetch-notices.ts"
+  },
+  "dependencies": {
+    "lucide-vue-next": "^0.460.0",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "fast-xml-parser": "^4.5.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.2.12"
+  }
+}

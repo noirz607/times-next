@@ -1,0 +1,72 @@
+name: Update notices & deploy
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # 临时 RSSHub 实例，job 结束后自动销毁。
+    # ECNU 的路由已合并进官方仓库，所以直接使用官方镜像；
+    # 如果需要使用 ECNU-minus/RSSHub 中尚未合并的路由，可改为自行构建的镜像。
+    services:
+      rsshub:
+        image: diygod/rsshub:latest
+        ports:
+          - 1200:1200
+        options: >-
+          --health-cmd "curl -f http://localhost:1200/healthz || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch notices from RSSHub
+        env:
+          RSSHUB_URL: http://localhost:1200
+          # 在仓库 Settings → Variables 中设置 SITE_URL（如 https://xxx.github.io/times-next），
+          # 用于读取上一次部署的数据以累积历史通知
+          PREVIOUS_URL: ${{ vars.SITE_URL && format('{0}/notices.json', vars.SITE_URL) || '' }}
+        run: npm run fetch
+
+      - run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
