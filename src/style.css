@@ -5,20 +5,23 @@
 html {
   scrollbar-gutter: stable;
   color-scheme: light;
-  --scrollbar-thumb: rgb(120 113 108 / 0.35); /* stone-500 */
-  --scrollbar-thumb-hover: rgb(120 113 108 / 0.6);
+  /* 轨道与纸张背景同色系，滑块为低对比度暖灰 */
+  --scrollbar-track: #efece6;
+  --scrollbar-thumb: #d3cec7;
+  --scrollbar-thumb-hover: #b3ada6;
 }
 
 html.dark {
   /* 让原生滚动条、表单控件等也切换为深色，避免出现刺眼的白色滚动条 */
   color-scheme: dark;
-  --scrollbar-thumb: rgb(168 162 158 / 0.3); /* stone-400 */
-  --scrollbar-thumb-hover: rgb(168 162 158 / 0.5);
+  --scrollbar-track: #1a1817; /* night-800，与深色背景几乎一致 */
+  --scrollbar-thumb: #3a3633;
+  --scrollbar-thumb-hover: #55504c;
 }
 
-/* 统一的细滚动条：透明轨道 + 低对比度滑块 */
+/* 统一的细滚动条：与背景相近的轨道 + 低对比度滑块 */
 * {
-  scrollbar-color: var(--scrollbar-thumb) transparent;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 /* Safari 及不支持 scrollbar-color 的旧版 Chromium */
@@ -28,7 +31,7 @@ html.dark {
 }
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
   border: 3px solid transparent;
