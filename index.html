@@ -9,6 +9,13 @@
       content="华东师大·旧闻缓递 (ECNU Times) — 一站式聚合华东师范大学本科生院、书院与各专业学院最新通知公告"
     />
     <title>华东师大·旧闻缓递 | ECNU Times</title>
+    <script>
+      // 在首帧渲染前应用主题，避免深色模式下加载时闪现浅色背景和白色滚动条
+      try {
+        var t = localStorage.getItem('times:theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        if (t === 'dark') document.documentElement.classList.add('dark')
+      } catch (e) {}
+    </script>
   </head>
   <body class="bg-paper font-sans text-stone-800 antialiased selection:bg-ecnu-100 selection:text-ecnu-800 dark:bg-night dark:text-stone-200 dark:selection:bg-ecnu-800 dark:selection:text-ecnu-50">
     <div id="app"></div>

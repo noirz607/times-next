@@ -4,6 +4,40 @@
 
 html {
   scrollbar-gutter: stable;
+  color-scheme: light;
+  --scrollbar-thumb: rgb(120 113 108 / 0.35); /* stone-500 */
+  --scrollbar-thumb-hover: rgb(120 113 108 / 0.6);
+}
+
+html.dark {
+  /* 让原生滚动条、表单控件等也切换为深色，避免出现刺眼的白色滚动条 */
+  color-scheme: dark;
+  --scrollbar-thumb: rgb(168 162 158 / 0.3); /* stone-400 */
+  --scrollbar-thumb-hover: rgb(168 162 158 / 0.5);
+}
+
+/* 统一的细滚动条：透明轨道 + 低对比度滑块 */
+* {
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* Safari 及不支持 scrollbar-color 的旧版 Chromium */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 9999px;
+  background-color: var(--scrollbar-thumb);
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
 }
 
 /* 去掉 type="search" 自带的清除按钮，使用自定义的 */

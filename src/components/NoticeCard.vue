@@ -22,9 +22,19 @@ const emit = defineEmits<{
 }>()
 
 const NEW_WINDOW_MS = 24 * 3_600_000
-const isNew = computed(
-  () => !props.isRead && !!props.notice.firstSeenAt && Date.now() - Date.parse(props.notice.firstSeenAt) < NEW_WINDOW_MS,
-)
+/** 发布日期早于这个时间的通知即使刚被抓到也不算「新」（例如来源恢复后补抓到的旧闻） */
+const NEW_MAX_AGE_MS = 7 * 86_400_000
+const isNew = computed(() => {
+  const { firstSeenAt, date } = props.notice
+  if (props.isRead || !firstSeenAt) return false
+  const now = Date.now()
+  if (now - Date.parse(firstSeenAt) >= NEW_WINDOW_MS) return false
+  if (date) {
+    const published = Date.parse(date)
+    if (!Number.isNaN(published) && now - published >= NEW_MAX_AGE_MS) return false
+  }
+  return true
+})
 const titleSegments = computed(() => highlight(props.notice.title, props.tokens))
 const summarySegments = computed(() => highlight(props.notice.summary, props.tokens))
 const logo = computed(() => import.meta.env.BASE_URL + props.source.logo)

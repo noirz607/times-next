@@ -29,6 +29,8 @@ const RETRIES = 2
 /** 超过这个天数的历史通知会被清理 */
 const MAX_AGE_DAYS = 180
 const MAX_NOTICES = 2000
+/** 发布日期早于这个天数的通知不会被标记为「新」（与 NoticeCard.vue 中的 NEW_MAX_AGE_MS 保持一致） */
+const NEW_MAX_AGE_DAYS = 7
 const SUMMARY_LENGTH = 160
 
 const parser = new XMLParser({
@@ -203,11 +205,18 @@ async function main() {
     merged.set(n.link, n)
   }
   const isFirstRun = previous.length === 0
+  // 未经裁剪的历史索引：超过 MAX_AGE_DAYS 被裁掉的旧通知若仍出现在 RSS 里，
+  // 也不能因为“查不到”而在每次运行时被重新标记为新通知
+  const previousByLink = new Map(previous.map((n) => [n.link, n]))
+  const staleBefore = Date.now() - NEW_MAX_AGE_DAYS * 86_400_000
   for (const { notices } of results) {
     for (const n of notices) {
-      const old = merged.get(n.link)
+      const old = merged.get(n.link) ?? previousByLink.get(n.link)
+      // 发布日期很早的通知（如来源恢复后补抓到的旧闻）不算新通知，也不应触发邮件推送
+      const published = Date.parse(n.date ?? '')
+      const isStale = !Number.isNaN(published) && published < staleBefore
       // 首次运行时没有历史可比对，不标记 firstSeenAt，否则所有通知都会显示为「新」
-      const firstSeenAt = old?.firstSeenAt ?? (old || isFirstRun ? undefined : now)
+      const firstSeenAt = isStale ? undefined : (old?.firstSeenAt ?? (old || isFirstRun ? undefined : now))
       merged.set(n.link, firstSeenAt ? { ...n, firstSeenAt } : n)
     }
   }

@@ -32,6 +32,7 @@
 - 关键词搜索（标题、摘要、来源名称），按 `/` 快速聚焦，命中词高亮
 - 按分类（教务综合 / 书院 / 理工 / 人文社科）或具体来源筛选，支持多选
 - **我的关注**：给来源加星标，之后打开即只看自己关心的通知
+- **邮件订阅**：免账号注册，支持按院系/部门 + 关键词定向订阅，支持「每 4 小时增量推送」或「每日 20:00 汇总日报」，邮件底部一键退订
 - **收藏**：保存通知快照，原通知过期后仍可查看
 - **已读 / 未读**：点击过的通知变灰；支持"只看未读"和"全部已读"
 - 新抓取到的通知显示 NEW 标记；按日期分组；深色模式；移动端适配
@@ -62,5 +63,25 @@ npm run fetch        # 默认请求 http://localhost:1200
 ## 部署
 
 1. 仓库 Settings → Pages → Source 选择 **GitHub Actions**。
-2. （推荐）在 Settings → Secrets and variables → Actions → Variables 中添加 `SITE_URL`，值为站点地址（如 `https://ecnu-minus.github.io/times-next`）。抓取脚本会读取上一次部署的 `notices.json` 来累积历史数据。
-3. 如需自定义域名，在 `public/` 下添加 `CNAME` 文件。
+2. （推荐）在 Settings → Secrets and variables → Actions → Variables 中添加 `SITE_URL`，值为站点地址（如 `https://times.myecnu.org`）。抓取脚本会读取上一次部署的 `notices.json` 来累积历史数据。
+3. 如需自定义域名，在 Pages 设置中填入自定义域名。
+
+## 邮件订阅配置（Cloudflare Worker + Resend）
+
+邮件订阅由 [`worker/index.js`](worker/index.js)（接收网页端验证码验证、保存订阅、一键退订）与 [`scripts/send-emails.ts`](scripts/send-emails.ts)（每次抓取后批量发信）配合完成：
+
+1. **获取 Resend API Key**：
+   - 在 [Resend](https://resend.com) 注册并验证发信域名（如 `myecnu.org`），创建一个 API Key（`re_...`）。
+2. **部署 Cloudflare Worker**：
+   - 在 Cloudflare Dashboard 创建一个 KV Namespace（命名为 `SUBSCRIBERS`）。
+   - 创建一个 Worker（如 `ecnu-times-api`，或绑定自定义域名 `times-api.myecnu.org`），将 [`worker/index.js`](worker/index.js) 代码粘贴进去（或在 `worker/` 目录执行 `npx wrangler deploy`）。
+   - 在 Worker 的 **Settings → Bindings / Variables** 中配置：
+     - KV 绑定：`SUBSCRIBERS`
+     - Secret：`RESEND_API_KEY`（你的 Resend API Key）
+     - Secret：`SECRET_KEY`（任意随机长字符串，用于签名验证码与 GitHub Actions 鉴权）
+     - Variable：`RESEND_FROM`（如 `华师旧闻缓递 <notify@myecnu.org>`）
+     - Variable：`SITE_URL`（如 `https://times.myecnu.org`）
+3. **配置 GitHub Actions 变量与密钥**：
+   - 在仓库 **Settings → Secrets and variables → Actions** 中添加：
+     - Secrets：`RESEND_API_KEY`、`SECRET_KEY`（与 Worker 中的值保持一致）
+     - Variables：`SUBSCRIPTION_API_URL`（Worker 的访问地址，如 `https://times-api.myecnu.org`）、`RESEND_FROM`

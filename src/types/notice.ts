@@ -44,3 +44,18 @@ export interface NoticesFile {
   sources: SourceStatus[]
   notices: Notice[]
 }
+
+/** 邮件推送频率：instant = 每 4 小时增量推送；daily = 每日 20:00 汇总日报 */
+export type PushFrequency = 'instant' | 'daily'
+
+/** 订阅者配置 */
+export interface Subscriber {
+  email: string
+  sources: string[]
+  frequency: PushFrequency
+  keywords: string[]
+  createdAt: string
+  updatedAt: string
+  unsubUrl?: string
+}
+

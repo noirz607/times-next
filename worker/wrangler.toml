@@ -1,0 +1,13 @@
+name = "ecnu-times-api"
+main = "index.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+SITE_URL = "https://times.myecnu.org"
+RESEND_FROM = "华师旧闻缓递 <notify@myecnu.org>"
+
+# 部署前请在 Cloudflare 创建 KV 命名空间 SUBSCRIBERS 并填入下方 id，
+# 以及配置两个 Secrets：RESEND_API_KEY 和 SECRET_KEY
+# [[kv_namespaces]]
+# binding = "SUBSCRIBERS"
+# id = "<YOUR_KV_NAMESPACE_ID>"

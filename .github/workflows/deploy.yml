@@ -55,7 +55,20 @@ jobs:
           PREVIOUS_URL: ${{ vars.SITE_URL && format('{0}/notices.json', vars.SITE_URL) || '' }}
         run: npm run fetch
 
-      - run: npm run build
+      - name: Build frontend
+        env:
+          VITE_SUBSCRIPTION_API_URL: ${{ vars.SUBSCRIPTION_API_URL || 'https://times-api.myecnu.org' }}
+        run: npm run build
+
+      - name: Send email notifications
+        continue-on-error: true
+        env:
+          SUBSCRIPTION_API_URL: ${{ vars.SUBSCRIPTION_API_URL || 'https://times-api.myecnu.org' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://times.myecnu.org' }}
+          RESEND_FROM: ${{ vars.RESEND_FROM || '华师旧闻缓递 <notify@myecnu.org>' }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: npm run notify
 
       - uses: actions/upload-pages-artifact@v3
         with:

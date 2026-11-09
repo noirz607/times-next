@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { ArrowUpRight, CheckCheck, Github, Inbox, Menu, Moon, RefreshCw, Search, Star, Sun, X } from 'lucide-vue-next'
+import { ArrowUpRight, CheckCheck, Github, Inbox, Mail, Menu, Moon, RefreshCw, Search, Star, Sun, X } from 'lucide-vue-next'
 import sourcesData from './data/sources.json'
 import { CATEGORIES } from './data/categories.ts'
 import type { Notice, Source } from './types/notice.ts'
@@ -9,6 +9,7 @@ import { useStorage } from './composables/useStorage.ts'
 import { dayKey, dayLabel, monthLabel, relativeTime } from './utils/format.ts'
 import NoticeCard from './components/NoticeCard.vue'
 import SourceSidebar from './components/SourceSidebar.vue'
+import SubscribeModal from './components/SubscribeModal.vue'
 
 const PAGE_SIZE = 30
 const MAX_READ = 5000
@@ -45,6 +46,7 @@ const query = ref('')
 const unreadOnly = ref(false)
 const visibleCount = ref(PAGE_SIZE)
 const showDrawer = ref(false)
+const showSubscribe = ref(new URLSearchParams(window.location.search).has('subscribe'))
 const searchInput = ref<HTMLInputElement | null>(null)
 
 const tokens = computed(() => query.value.trim().toLowerCase().split(/\s+/).filter(Boolean))
@@ -155,7 +157,8 @@ function onKeydown(e: KeyboardEvent) {
     e.preventDefault()
     searchInput.value?.focus()
   } else if (e.key === 'Escape') {
-    if (showDrawer.value) showDrawer.value = false
+    if (showSubscribe.value) showSubscribe.value = false
+    else if (showDrawer.value) showDrawer.value = false
     else if (typing) {
       query.value = ''
       searchInput.value?.blur()
@@ -199,7 +202,15 @@ const pillBtn =
           {{ relativeTime(data.updatedAt) }}更新
           <template v-if="failed.size"> · <span class="text-gold-500">{{ failed.size }} 个来源抓取失败</span></template>
         </p>
-        <div class="ml-auto flex items-center gap-0.5">
+        <div class="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            :class="[pillBtn, 'mr-1']"
+            @click="showSubscribe = true"
+          >
+            <Mail class="h-3.5 w-3.5 text-ecnu-600 dark:text-ecnu-300" :stroke-width="1.75" />
+            <span>邮件订阅</span>
+          </button>
           <button
             type="button"
             :class="iconBtn"
@@ -411,5 +422,8 @@ const pillBtn =
         </div>
       </div>
     </Transition>
+
+    <!-- 邮件订阅弹窗 -->
+    <SubscribeModal :open="showSubscribe" :sources="sources" :followed="followed" @close="showSubscribe = false" />
   </div>
 </template>
