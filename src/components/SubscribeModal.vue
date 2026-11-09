@@ -249,7 +249,7 @@ async function handleSubmit() {
         </div>
 
         <!-- 模式切换 -->
-        <div class="flex border-b border-stone-200/80 bg-stone-100/70 px-6 pt-2.5 dark:border-night-600 dark:bg-night-900/40">
+        <div class="flex border-b border-stone-200/80 bg-stone-100/70 px-6 pt-2.5 dark:border-night-600 dark:bg-night/50">
           <button
             type="button"
             class="border-b-2 px-4 pb-2.5 text-[13px] font-medium transition"
@@ -294,7 +294,7 @@ async function handleSubmit() {
                 v-model="email"
                 type="email"
                 placeholder="yourname@stu.ecnu.edu.cn"
-                class="flex-1 rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-[13.5px] outline-none transition placeholder:text-stone-400 focus:border-ecnu-400 focus:ring-3 focus:ring-ecnu-100 dark:border-night-600 dark:bg-night-900 dark:focus:border-ecnu-700"
+                class="flex-1 rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-[13.5px] outline-none transition placeholder:text-stone-400 focus:border-ecnu-400 focus:ring-4 focus:ring-ecnu-100 dark:focus:ring-ecnu-900/50 dark:border-night-600 dark:bg-night dark:focus:border-ecnu-700"
               />
               <button
                 type="button"
@@ -313,7 +313,7 @@ async function handleSubmit() {
                 inputmode="numeric"
                 maxlength="6"
                 placeholder="输入邮件收到的 6 位数字验证码"
-                class="w-full rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-[13.5px] tracking-widest outline-none transition placeholder:tracking-normal placeholder:text-stone-400 focus:border-ecnu-400 focus:ring-3 focus:ring-ecnu-100 sm:max-w-xs dark:border-night-600 dark:bg-night-900 dark:focus:border-ecnu-700"
+                class="w-full rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-[13.5px] tracking-widest outline-none transition placeholder:tracking-normal placeholder:text-stone-400 focus:border-ecnu-400 focus:ring-4 focus:ring-ecnu-100 dark:focus:ring-ecnu-900/50 sm:max-w-xs dark:border-night-600 dark:bg-night dark:focus:border-ecnu-700"
               />
               <span class="text-[11px] text-stone-400">验证码 10 分钟内有效</span>
             </div>
@@ -330,7 +330,7 @@ async function handleSubmit() {
                   :class="
                     frequency === 'instant'
                       ? 'border-ecnu-600 bg-ecnu-600/[0.04] ring-1 ring-ecnu-600 dark:border-ecnu-400 dark:bg-ecnu-400/10 dark:ring-ecnu-400'
-                      : 'border-stone-200 bg-white hover:border-stone-300 dark:border-night-600 dark:bg-night-900'
+                      : 'border-stone-200 bg-white hover:border-stone-300 dark:border-night-600 dark:bg-night'
                   "
                   @click="frequency = 'instant'"
                 >
@@ -352,7 +352,7 @@ async function handleSubmit() {
                   :class="
                     frequency === 'daily'
                       ? 'border-ecnu-600 bg-ecnu-600/[0.04] ring-1 ring-ecnu-600 dark:border-ecnu-400 dark:bg-ecnu-400/10 dark:ring-ecnu-400'
-                      : 'border-stone-200 bg-white hover:border-stone-300 dark:border-night-600 dark:bg-night-900'
+                      : 'border-stone-200 bg-white hover:border-stone-300 dark:border-night-600 dark:bg-night'
                   "
                   @click="frequency = 'daily'"
                 >
@@ -398,7 +398,7 @@ async function handleSubmit() {
                 </div>
               </div>
 
-              <div class="max-h-56 space-y-3 overflow-y-auto rounded-xl border border-stone-200 bg-white p-3.5 dark:border-night-600 dark:bg-night-900">
+              <div class="max-h-56 space-y-3 overflow-y-auto rounded-xl border border-stone-200 bg-white p-3.5 dark:border-night-600 dark:bg-night">
                 <div v-for="group in groupedSources" :key="group.id">
                   <div class="mb-1.5 text-[11px] font-medium text-stone-400">{{ group.label }}</div>
                   <div class="flex flex-wrap gap-1.5">
@@ -431,13 +431,13 @@ async function handleSubmit() {
                 v-model="keywordsText"
                 type="text"
                 placeholder="例如：奖学金 选课 保研 竞赛 讲座（留空代表不过滤）"
-                class="w-full rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-[13px] outline-none transition placeholder:text-stone-400 focus:border-ecnu-400 focus:ring-3 focus:ring-ecnu-100 dark:border-night-600 dark:bg-night-900 dark:focus:border-ecnu-700"
+                class="w-full rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-[13px] outline-none transition placeholder:text-stone-400 focus:border-ecnu-400 focus:ring-4 focus:ring-ecnu-100 dark:focus:ring-ecnu-900/50 dark:border-night-600 dark:bg-night dark:focus:border-ecnu-700"
               />
             </div>
           </template>
 
           <template v-else>
-            <div class="rounded-xl border border-stone-200 bg-white p-4 text-[13px] leading-relaxed text-stone-600 dark:border-night-600 dark:bg-night-900 dark:text-stone-300">
+            <div class="rounded-xl border border-stone-200 bg-white p-4 text-[13px] leading-relaxed text-stone-600 dark:border-night-600 dark:bg-night dark:text-stone-300">
               <p>您可以通过以下两种方式随时取消订阅：</p>
               <ul class="mt-2 list-disc space-y-1 pl-5 text-xs text-stone-500 dark:text-stone-400">
                 <li>直接点击任何一封推送邮件底部的<strong>「一键退订」</strong>链接（无需输入验证码）。</li>
@@ -461,7 +461,7 @@ async function handleSubmit() {
         </div>
 
         <!-- 底部操作栏 -->
-        <div class="flex items-center justify-between border-t border-stone-200/80 bg-stone-100/50 px-6 py-3.5 dark:border-night-600 dark:bg-night-900/40">
+        <div class="flex items-center justify-between border-t border-stone-200/80 bg-stone-100/50 px-6 py-3.5 dark:border-night-600 dark:bg-night/50">
           <span class="text-[11px] text-stone-400">
             如修改已订阅的学院或频率，使用同一邮箱重新保存即可覆盖
           </span>
