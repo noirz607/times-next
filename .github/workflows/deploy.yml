@@ -2,7 +2,8 @@ name: Update notices & deploy
 
 on:
   schedule:
-    - cron: "0 */4 * * *"
+    # 避开整点高峰（GitHub 会在整点丢弃大量定时任务），并提高频率以弥补被跳过的运行
+    - cron: "17 */2 * * *"
   workflow_dispatch:
   push:
     branches: [main]
@@ -23,10 +24,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # 临时 RSSHub 实例，job 结束后自动销毁。
-    # ECNU 的路由已合并进官方仓库，所以直接使用官方镜像；
-    # 如果需要使用 ECNU-minus/RSSHub 中尚未合并的路由，可改为自行构建的镜像。
-    services:
+    # 涓存椂 RSSHub 瀹炰緥锛宩ob 缁撴潫鍚庤嚜鍔ㄩ攢姣併€?    # ECNU 鐨勮矾鐢卞凡鍚堝苟杩涘畼鏂逛粨搴擄紝鎵€浠ョ洿鎺ヤ娇鐢ㄥ畼鏂归暅鍍忥紱
+    # 濡傛灉闇€瑕佷娇鐢?ECNU-minus/RSSHub 涓皻鏈悎骞剁殑璺敱锛屽彲鏀逛负鑷鏋勫缓鐨勯暅鍍忋€?    services:
       rsshub:
         image: diygod/rsshub:latest
         ports:
@@ -50,8 +49,8 @@ jobs:
       - name: Fetch notices from RSSHub
         env:
           RSSHUB_URL: http://localhost:1200
-          # 在仓库 Settings → Variables 中设置 SITE_URL（如 https://xxx.github.io/times-next），
-          # 用于读取上一次部署的数据以累积历史通知
+          # 鍦ㄤ粨搴?Settings 鈫?Variables 涓缃?SITE_URL锛堝 https://xxx.github.io/times-next锛夛紝
+          # 鐢ㄤ簬璇诲彇涓婁竴娆￠儴缃茬殑鏁版嵁浠ョ疮绉巻鍙查€氱煡
           PREVIOUS_URL: ${{ vars.SITE_URL && format('{0}/notices.json', vars.SITE_URL) || '' }}
         run: npm run fetch
 
@@ -65,7 +64,7 @@ jobs:
         env:
           SUBSCRIPTION_API_URL: ${{ vars.SUBSCRIPTION_API_URL || 'https://times-api.myecnu.org' }}
           SITE_URL: ${{ vars.SITE_URL || 'https://times.myecnu.org' }}
-          RESEND_FROM: ${{ vars.RESEND_FROM || '华师旧闻缓递 <notify@myecnu.org>' }}
+          RESEND_FROM: ${{ vars.RESEND_FROM || '鍗庡笀鏃ч椈缂撻€?<notify@myecnu.org>' }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: npm run notify
